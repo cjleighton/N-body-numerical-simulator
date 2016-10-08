@@ -1,4 +1,4 @@
-## Terrible N-body_numerical_simulator
+# Terrible N-body_numerical_simulator
 
 This is a very rough N-body simulator I've been working on in MATLAB.  It doesn't require any special libraries, and the most exotic thing it uses is the plot() function.  Run this by putting grav_n_body.m, circle.m, and body.m in the same directory and running grav_n_body.m in MATLAB.  I'm using version R2016a, but it should work in virtually any version.
 
