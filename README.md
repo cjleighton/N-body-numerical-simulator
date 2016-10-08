@@ -1,6 +1,6 @@
-# Terrible N-body_numerical_simulator
+## Terrible N-body_numerical_simulator
 
-This is a very rough N-body simulator I've been working on in MATLAB.  It doesn't require any special libraries, and the most exotic thing it uses is the plot() function.
+This is a very rough N-body simulator I've been working on in MATLAB.  It doesn't require any special libraries, and the most exotic thing it uses is the plot() function.  Run this by putting grav_n_body.m, circle.m, and body.m in the same directory and running grav_n_body.m in MATLAB.  I'm using version R2016a, but it should work in virtually any version.
 
 New particles can be added by creating a new object of type 'body' at the top of grav_n_body.m, and it must also be given all of the attributes listed in body.m (such as mass, radius, position, etc).
 
