@@ -1,18 +1,27 @@
-G=6.67*10^(-11); % Gravitational constant
+G=6.67e-11; % Gravitational constant
 figure; % Create a figure to plot the system on
+zlim([-10 10]);
+axis([-15 15 -10 10]); % Dimensions of system
 
-%% 2-body initial conditions
-a=body
-a.radius=0.5;
-a.mass=1*10^12;
-a.position=[-3 0];
-a.velocity=[0 10];
+%% 3-body initial conditions
+G=1; %Change G to G=1 for this situation
+axis([-1.5 1.5 -1 1]); %Change axes for this situation
+a=body;
+a.radius=0.1;
+a.mass=1;
+a.position=[-0.97000436 0.24308753];
+a.velocity=-0.5.*[0.93240737 0.86473146];
 b=body;
-b.radius=0.5;
-b.mass=1*10^13;
-b.position=[2 0];
-b.velocity=[0 -1];
-bodies=[a b];
+b.radius=0.1;
+b.mass=1;
+b.position=-a.position;
+b.velocity=a.velocity;
+c=body;
+c.radius=0.1;
+c.mass=1;
+c.position=[0 0];
+c.velocity=-2.*a.velocity;
+bodies=[a b c]; % Array of bodies
 
 %% n-body initial conditions
 % bodies=[];
@@ -21,7 +30,7 @@ bodies=[a b];
 %     new_body.radius=0.2; % Default radius
 %     new_body.mass=1*10^11; % Default mass
 %     new_body.position=[randi([-10 10],1,1) randi([-10 10],1,1)]; % Random position
-%     new_body.velocity=[randi([-2 2],1,1) randi([-2 2],1,1)]; % Random velocity
+%     new_body.velocity=[randi([-0 0],1,1) randi([-2 2],1,1)]; % Random velocity
 %     bodies=[bodies new_body]; % Array of bodies
 % end
 
@@ -54,6 +63,10 @@ while 1
                 %% Create vector of all forces acting on body i from all other particles, from j=1:length(bodies)
                 acc_x_vec=[acc_x_vec i2j_acc_x];
                 acc_y_vec=[acc_y_vec i2j_acc_y];
+                
+                if d_mag<(bodies(i).radius+bodies(j).radius)
+                    %Collision detected
+                end
             end
         end
         %% Sum the vectors to find the total acceleration body i experiences in the X and Y
