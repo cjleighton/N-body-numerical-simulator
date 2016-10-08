@@ -1,10 +1,10 @@
 classdef body
     properties
-        mass;
-        position; % current position
-        new_pos; % new position
-        velocity; % current velocity
-        new_vel; % new velocity
-        acceleration;
+        radius; % Radius property
+        mass; % Mass property
+        position; % Current position
+        new_position; % Position to update particle with
+        velocity; % Current velocity
+        acceleration; % Current acceleration experienced by particle
     end
 end
