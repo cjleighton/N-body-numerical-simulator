@@ -1,8 +1,7 @@
 figure('units','normalized','position',[0 0.02 0.55 1]); % Create a figure to plot the system on
 
 %[bodies,G,delta_t,sim_timespan]=figure_eight(); % Figure eight scenario
-%[bodies,G,delta_t,sim_timespan]=random_particles(); % Randomized particles scenario
-[bodies,G,delta_t,sim_timespan]=solar_system(); % Star system scenario
+[bodies,G,delta_t,sim_timespan]=random_particles(); % Randomized particles scenario
 
 t=0; % Initial time
 animation=VideoWriter('animation.avi'); % Set an output video to write to
