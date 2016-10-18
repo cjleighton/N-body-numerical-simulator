@@ -1,74 +1,66 @@
-G=6.67e-11; % Gravitational constant
-figure; % Create a figure to plot the system on
-zlim([-10 10]);
-axis([-15 15 -10 10]); % Dimensions of system
+figure('units','normalized','position',[0 0.02 0.55 1]); % Create a figure to plot the system on
 
-%% 3-body initial conditions
-G=1; %Change G to G=1 for this situation
-axis([-1.5 1.5 -1 1]); %Change axes for this situation
-a=body;
-a.radius=0.1;
-a.mass=1;
-a.position=[-0.97000436 0.24308753];
-a.velocity=-0.5.*[0.93240737 0.86473146];
-b=body;
-b.radius=0.1;
-b.mass=1;
-b.position=-a.position;
-b.velocity=a.velocity;
-c=body;
-c.radius=0.1;
-c.mass=1;
-c.position=[0 0];
-c.velocity=-2.*a.velocity;
-bodies=[a b c]; % Array of bodies
+%[bodies,G,delta_t,sim_timespan]=figure_eight(); % Figure eight scenario
+%[bodies,G,delta_t,sim_timespan]=random_particles(); % Randomized particles scenario
+[bodies,G,delta_t,sim_timespan]=solar_system(); % Star system scenario
 
-%% n-body initial conditions
-% bodies=[];
-% for i=1:10
-%     new_body=body;
-%     new_body.radius=0.2; % Default radius
-%     new_body.mass=1*10^11; % Default mass
-%     new_body.position=[randi([-10 10],1,1) randi([-10 10],1,1)]; % Random position
-%     new_body.velocity=[randi([-0 0],1,1) randi([-2 2],1,1)]; % Random velocity
-%     bodies=[bodies new_body]; % Array of bodies
-% end
-
-delta_t=0.01; % Time step
 t=0; % Initial time
+animation=VideoWriter('animation.avi'); % Set an output video to write to
+open(animation);
 
-while 1
-    for i=1:length(bodies) % Look at i-th body
+while t<sim_timespan
+    for i=1:1:length(bodies) % Look at i-th body
         acc_x_vec=[]; % Every body i has different accelerations acting on it
         acc_y_vec=[]; % Thus, we must clear it every time we look at a different body i
         for j=1:length(bodies) % Look at forces that body i feels from body j
-            if i ~= j % Exclude body i; nonsensical to find forces between body and itself
+            if (i ~= j & bodies(j).position(1)<(10^99)) % Exclude body i; nonsensical to find forces between body and itself
                 %% Calculate relationship between positions of bodies i and j
                 d_x=abs((bodies(j).position(1)-bodies(i).position(1)));
                 d_y=abs((bodies(j).position(2)-bodies(i).position(2)));
                 d_mag=sqrt(d_x^2+d_y^2); % Magnitude of distance
                 theta=atan(d_y/d_x); % Angle between i and j
-                %% Calculate accelerations body i experiences toward body j
-                a_abs=(G*bodies(j).mass)/(d_mag^2); % Magnitude of acceleration i feels toward j
-                i2j_acc_x=(a_abs*cos(theta)); % Acceleration in X direction
-                i2j_acc_y=(a_abs*sin(theta)); % Acceleration in Y direction
-                %% Fix signs
-                % There's likely a better solution to this. Will investigate.
-                if bodies(i).position(1)>bodies(j).position(1)
-                    i2j_acc_x=-i2j_acc_x;
-                end
-                if bodies(i).position(2)>bodies(j).position(2)
-                    i2j_acc_y=-i2j_acc_y;
-                end
-                %% Create vector of all forces acting on body i from all other particles, from j=1:length(bodies)
-                acc_x_vec=[acc_x_vec i2j_acc_x];
-                acc_y_vec=[acc_y_vec i2j_acc_y];
-                
-                if d_mag<(bodies(i).radius+bodies(j).radius)
-                    %Collision detected
+                %% Check for collisions
+                if d_mag<((bodies(i).radius+bodies(j).radius)) % A collision has ocurred between particles i and j
+                    % I should probably calculate the combined particle's
+                    % acceleration as a function of the accelerations
+                    % acting on the two constituent bodies, but that will
+                    % take some thought and restructuring.
+                    bodies(i).velocity=(bodies(i).mass.*bodies(i).velocity+bodies(j).mass.*bodies(j).velocity)./(bodies(i).mass+bodies(j).mass); % Calculate combined body's velocity
+                    bodies(i).position=(bodies(i).mass.*bodies(i).position+bodies(j).mass.*bodies(j).position)./(bodies(i).mass+bodies(j).mass); % Calculate combined body's position
+                    bodies(i).mass=bodies(i).mass+bodies(j).mass; % Calculate combined body's mass
+                    bodies(i).radius=(bodies(i).radius^3+bodies(j).radius^3)^(1/3); % Calculate combined body's radius
+                    % The commented section doesn't work, but should be the
+                    % basis for cleanly removing particle j from the bodies
+                    % array (rather than just moving particle j far, far
+                    % away as I do on the 3 lines following the commented
+                    % section.
+%                     for k=j:1:length(bodies)-1;
+%                         bodies(k)=bodies(k+1);
+%                     end
+%                     bodies(length(bodies))=[];
+                    bodies(j).position=[10^99 10^99]; % Crudely move body j very, ver far away
+                    bodies(j).velocity=[100 100]; % Set it to move away from the system
+                    bodies(j).mass=0; % Set its mass to zero
+                else % There's no collision between i and j; proceed to calculate acceleration between particles i and j
+                    %% Calculate accelerations body i experiences toward body j
+                    a_abs=(G*bodies(j).mass)/(d_mag^2); % Magnitude of acceleration i feels toward j
+                    i2j_acc_x=(a_abs*cos(theta)); % Acceleration in X direction
+                    i2j_acc_y=(a_abs*sin(theta)); % Acceleration in Y direction
+                    %% Fix signs
+                    % There's likely a better solution to this. Will investigate.
+                    if bodies(i).position(1)>bodies(j).position(1)
+                        i2j_acc_x=-i2j_acc_x;
+                    end
+                    if bodies(i).position(2)>bodies(j).position(2)
+                        i2j_acc_y=-i2j_acc_y;
+                    end
+                    %% Create vector of all forces acting on body i from all other particles, from j=1:length(bodies)
+                    acc_x_vec=[acc_x_vec i2j_acc_x];
+                    acc_y_vec=[acc_y_vec i2j_acc_y];
                 end
             end
         end
+        % We're in the root level of the i for loop
         %% Sum the vectors to find the total acceleration body i experiences in the X and Y
         bodies(i).acceleration=[sum(acc_x_vec) sum(acc_y_vec)]; % Vector form; accelerations in X and Y directions
         %% Calculate new velocities and positions
@@ -86,7 +78,7 @@ while 1
     for k=1:length(bodies)
         bodies(k).position=bodies(k).new_position;
     end
-    
-    circle(bodies,t); % Plot the system
+    circle(bodies,t,animation); % Plot the system
     t=t+delta_t; % Time step
 end
+close(animation);
