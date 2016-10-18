@@ -7,6 +7,7 @@ New particles can be added by creating a new object of type 'body' at the top of
 ## To-do
 
 ~~- Add collision detection.~~ (Mostly working)
+
 ~~- Make a quicker way to set initial conditions.  MATLAB doesn't have any way to set up a GUI, does it?~~
 - Extend simulation to 3-dimensions.  This will take some thought, considering the angles that will need to be calculated.
 - Maybe rewrite in Python?
