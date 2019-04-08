@@ -1,5 +1,4 @@
-# N-body numerical simulator
-## Configured to simulate the solar system
+# N-body numerical simulation of the solar system
 This is something I did for fun that I started working on it three or four years ago (egads) around the time of my freshman year in college and haven't done much on it in the last year and a half.
 ## Running the simulation
 * Launch script is `main.m`, which is the actual core of the simulation
