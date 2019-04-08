@@ -8,7 +8,7 @@ This is something I did for fun that I started working on it three or four years
 * `circle.m` plots and renders the animation as a video
 * Runs fine in MATLAB 2018b (probably Octave too)
 ## Implementation details
-This uses the Stormer-Verlet integration scheme, which I chose because it's really easy to implement. At each timestep, accelerations between every body in the system are calculated and the integrator is used to step positions forward, and that's about it.
+This uses the Stormer-Verlet integration scheme, which I chose because it's really easy to implement. At each timestep, accelerations between every body in the system are calculated and the integrator is used to step positions forward, and that's the high-level gist of it.
 ## [Demonstration on YouTube](https://www.youtube.com/watch?v=R6IAjGgqdCs)
 ## Issues
 * By nature of how simple and "brute force" this is, performance is bad and it's not well-suited to simulating anything for millions of years, which is where interesting solar system dynamics start to happen.
