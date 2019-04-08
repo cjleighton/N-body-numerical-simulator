@@ -1,9 +1,12 @@
 figure('units','normalized','position',[0 0.02 0.55 1]); % Create a figure to plot the system on
-view([1 -1 1]); % viewing angle
+view([1 -1 1]); % Viewing angle
 axis([-8.2e11 8.2e11 -8.2e11 8.2e11 -8.2e11 8.2e11]);
 
 [bodies]=solar_system(); % Star system scenario
-massive_index=1:6; % bodies(1:massive_index) have significant mass
+% In order to accelerate the simulation, we can exclude the influence of
+% small bodies on large bodies, e.g. ignore the pull of asteroids on
+% planets and only consider how planets and the Sun influence asteroids
+massive_index=1:6; % bodies(1:massive_index) have significant mass:
 
 t=0; % Initial time
 delta_t=3*86400; % Time step, seconds
